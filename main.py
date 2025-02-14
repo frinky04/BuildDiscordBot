@@ -18,22 +18,21 @@ async def on_ready():
 async def build(ctx):
     global build_confirmation
     build_confirmation = True
-    await ctx.send('⚠️ Please use `!confirm` to confirm the build ⚠️')
+    await ctx.send('⚠️ Please use `!confirm` to confirm the build')
     
 @bot.command()
 async def confirm(ctx):
     global build_confirmation
     if build_confirmation:
         build_confirmation = False
-        await start_build()
+        await start_build(ctx)
     else:
-        await ctx.send('❌ Please use `!build` to start the build process ❌')
+        await ctx.send('❌ Please use `!build` to start the build process')
     
-async def start_build():
+async def start_build(ctx):
     
     await bot.wait_until_ready()
-    channel = bot.get_channel(833979386450398830)
-    await channel.send('🚀 Starting build 🚀')
+    await ctx.send('🚀 Starting build')
 
 
 bot.run(os.getenv('DISCORD_TOKEN'))
