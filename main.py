@@ -1,4 +1,6 @@
 import discord
+import sys
+import os
 from discord.ext import commands
 
 intents = discord.Intents.default()
@@ -34,6 +36,4 @@ async def start_build():
     await channel.send('🚀 Starting build 🚀')
 
 
-
-# bot.run('MTMzOTc5Mzg2NDUwMzk4ODMwNA.GYrP7s.Elcw_BWSekNNaqgEmSyR5IzWHzGl9NjlmH91pQ')
-# leaked the token, but its fine, i reset it already
+bot.run(os.getenv('DISCORD_TOKEN'))
