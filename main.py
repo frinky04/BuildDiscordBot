@@ -35,4 +35,5 @@ async def start_build():
 
 
 
-bot.run('MTMzOTc5Mzg2NDUwMzk4ODMwNA.GYrP7s.Elcw_BWSekNNaqgEmSyR5IzWHzGl9NjlmH91pQ')
+# bot.run('MTMzOTc5Mzg2NDUwMzk4ODMwNA.GYrP7s.Elcw_BWSekNNaqgEmSyR5IzWHzGl9NjlmH91pQ')
+# leaked the token, but its fine, i reset it already
