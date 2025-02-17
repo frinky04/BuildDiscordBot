@@ -45,7 +45,6 @@ async def confirm(ctx):
 
 async def start_build(ctx):
     await bot.wait_until_ready()
-    await ctx.send('🚀 Starting build...')
 
     if not BUILD_API_URL:
         await ctx.send("❌ Error: Build API URL is not set. Contact the administrator.")
@@ -58,11 +57,9 @@ async def start_build(ctx):
             data=json.dumps({"content": "!start"})
         )
 
-        if response.status_code == 200:
-            await ctx.send("✅ Build successfully started!")
-        else:
+        if response.status_code != 200:
             await ctx.send(f"❌ Failed to start build: {response.status_code} - {response.text}")
-
+            
     except Exception as e:
         await ctx.send(f"❌ Error: {str(e)}")
 
