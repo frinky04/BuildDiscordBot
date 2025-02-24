@@ -98,13 +98,12 @@ async def start_build(ctx):
     except Exception as e:
         await ctx.send(f"❌ Error: {str(e)}")
 
-@tasks.loop(seconds=5)
+@tasks.loop(minutes=1)
 async def nightly_build():
     global last_nightly_build_date
     now = datetime.now(ZoneInfo("America/New_York"))
-    print(f"Checking for nightly build at {now.minute} minutes past {now.hour}")
     # If it is 3:00am EST and we haven't run the nightly build yet today
-    if now.hour == 0 and now.minute == 11:
+    if now.hour == 3 and now.minute == 0:
         if last_nightly_build_date != now.date():
             try:
                 # Check the current build status
@@ -118,7 +117,7 @@ async def nightly_build():
                 if status == "STOPPED":
                     channel = bot.get_channel(int(NIGHTLY_BUILD_CHANNEL))
                     if channel:
-                        await channel.send("🤖 Automated nightly build is starting at 3am EST!")
+                        await channel.send("🤖 Automated nightly build starting")
                         await start_build(channel)
                         last_nightly_build_date = now.date()
                     else:
