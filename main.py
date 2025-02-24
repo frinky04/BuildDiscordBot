@@ -30,6 +30,23 @@ async def on_ready():
 
 @bot.command()
 async def build(ctx):
+    
+    # check if status == STOPPED
+    try:
+        response = requests.post(
+            BUILD_API_URL,
+            headers={"Content-Type": "application/json"},
+            data=json.dumps({"content": "!status"})
+        )
+        response_data = response.json()
+        status = response_data.get("status", "STOPPED")
+        if status == "STOPPED":
+            await build_start(ctx)
+        else:
+            await ctx.send(f"❌ Build is already in progress")
+    except Exception as e:
+        await ctx.send(f"❌ Error: {str(e)}")
+    
     global build_confirmation
     build_confirmation = True
     await ctx.send('⚠️ Please use `!confirm` to confirm the build')
