@@ -35,7 +35,7 @@ def check_build_status():
         data=json.dumps({"content": "!status"})
     )
     response_data = response.json()
-    return response_data.get("status", "STOPPED")
+    return response_data.get("message", "STOPPED")
 
 @bot.event
 async def on_ready():
