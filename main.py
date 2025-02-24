@@ -103,7 +103,7 @@ async def nightly_build():
     global last_nightly_build_date
     now = datetime.now(ZoneInfo("America/New_York"))
     # If it is 3:00am EST and we haven't run the nightly build yet today
-    if now.hour == 7 and now.minute == 0:
+    if now.hour == 7 and now.minute == 2:
         if last_nightly_build_date != now.date():
             try:
                 # Check the current build status
@@ -131,7 +131,7 @@ async def nightly_build():
 secrets = load_secrets()
 DISCORD_TOKEN = secrets.get("DISCORD_TOKEN")
 BUILD_API_URL = secrets.get("BUILD_API_URL")
-NIGHTLY_BUILD_CHANNEL = secrets.get("NIGHTLY_BUILD_CHANNEL")  # This should be the channel ID (as a string)
+NIGHTLY_BUILD_CHANNEL = 1133267820042530907  # This doesn't need to be a secret
 
 if not DISCORD_TOKEN:
     DISCORD_TOKEN = input("Please enter your Discord token: ").strip()
@@ -142,10 +142,5 @@ if not BUILD_API_URL:
     BUILD_API_URL = input("Please enter your build API URL: ").strip()
     with open("secrets.txt", "a") as file:
         file.write(f"\nBUILD_API_URL={BUILD_API_URL}")
-
-if not NIGHTLY_BUILD_CHANNEL:
-    NIGHTLY_BUILD_CHANNEL = input("Please enter the channel ID for nightly builds: ").strip()
-    with open("secrets.txt", "a") as file:
-        file.write(f"\nNIGHTLY_BUILD_CHANNEL={NIGHTLY_BUILD_CHANNEL}")
 
 bot.run(DISCORD_TOKEN)
