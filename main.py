@@ -12,7 +12,6 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-build_confirmation = False
 last_nightly_build_date = None  # Tracks when the nightly build last ran
 
 # Load secrets
@@ -28,53 +27,35 @@ def load_secrets():
         print("Secrets file not found!")
     return secrets
 
+def check_build_status():
+    """Helper function to check the current build status."""
+    response = requests.post(
+        BUILD_API_URL,
+        headers={"Content-Type": "application/json"},
+        data=json.dumps({"content": "!status"})
+    )
+    response_data = response.json()
+    return response_data.get("status", "STOPPED")
+
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
     nightly_build.start()  # Start the background nightly build task
 
 @bot.command()
-async def build(ctx):
-    # check if status == STOPPED
+async def build(ctx, arg: str = None):
+    if arg != "confirm":
+        await ctx.send("Usage: `!build confirm`")
+        return
+
     try:
-        response = requests.post(
-            BUILD_API_URL,
-            headers={"Content-Type": "application/json"},
-            data=json.dumps({"content": "!status"})
-        )
-        response_data = response.json()
-        status = response_data.get("status", "STOPPED")
+        status = check_build_status()
         if status == "STOPPED":
-            global build_confirmation
-            build_confirmation = True
-            await ctx.send('⚠️ Please use `!confirm` to confirm the build')
+            await start_build(ctx)
         else:
             await ctx.send("❌ Build is already in progress")
     except Exception as e:
-        await ctx.send(f"❌ Error: {str(e)}")
-
-@bot.command()
-async def status(ctx):
-    try:
-        response = requests.post(
-            BUILD_API_URL,
-            headers={"Content-Type": "application/json"},
-            data=json.dumps({"content": "!status"})
-        )
-        response_data = response.json()
-        message = response_data.get("message", "No message found.")
-        await ctx.send(message)
-    except Exception as e:
-        await ctx.send(f"❌ Error: {str(e)}")
-
-@bot.command()
-async def confirm(ctx):
-    global build_confirmation
-    if build_confirmation:
-        build_confirmation = False
-        await start_build(ctx)
-    else:
-        await ctx.send("❌ Please use `!build` to start the build process")
+        await ctx.send(f"❌ Error checking build status: {str(e)}")
 
 async def start_build(ctx):
     await bot.wait_until_ready()
@@ -93,10 +74,9 @@ async def start_build(ctx):
         if response.status_code != 200:
             await ctx.send(f"❌ Failed to start build: {response.status_code} - {response.text}")
         else:
-            # Optionally notify that the build has started
             await ctx.send("✅ Build started successfully.")
     except Exception as e:
-        await ctx.send(f"❌ Error: {str(e)}")
+        await ctx.send(f"❌ Error starting build: {str(e)}")
 
 @tasks.loop(minutes=1)
 async def nightly_build():
@@ -106,14 +86,7 @@ async def nightly_build():
     if now.hour == 3 and now.minute == 0:
         if last_nightly_build_date != now.date():
             try:
-                # Check the current build status
-                response = requests.post(
-                    BUILD_API_URL,
-                    headers={"Content-Type": "application/json"},
-                    data=json.dumps({"content": "!status"})
-                )
-                response_data = response.json()
-                status = response_data.get("status", "STOPPED")
+                status = check_build_status()
                 if status == "STOPPED":
                     channel = bot.get_channel(int(NIGHTLY_BUILD_CHANNEL))
                     if channel:
