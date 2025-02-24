@@ -98,10 +98,11 @@ async def start_build(ctx):
     except Exception as e:
         await ctx.send(f"❌ Error: {str(e)}")
 
-@tasks.loop(minutes=1)
+@tasks.loop(seconds=5)
 async def nightly_build():
     global last_nightly_build_date
     now = datetime.now(ZoneInfo("America/New_York"))
+    print(f"Checking for nightly build at {now}")
     # If it is 3:00am EST and we haven't run the nightly build yet today
     if now.hour == 7 and now.minute == 2:
         if last_nightly_build_date != now.date():
