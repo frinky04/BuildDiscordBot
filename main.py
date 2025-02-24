@@ -63,7 +63,7 @@ async def status(ctx):
         status = check_build_status()
         if(status == "STOPPED"):
             await ctx.send("Ready ✅")
-        elif(status == "RUNNING"):
+        else:
             await ctx.send("Running 📦")
     except Exception as e:
         await ctx.send(f"❌ Error: {str(e)}")
