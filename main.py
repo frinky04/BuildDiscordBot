@@ -36,13 +36,17 @@ async def build(ctx):
     
 @bot.command()
 async def status(ctx):
-    response = requests.post(
+    try:
+        response = requests.post(
             BUILD_API_URL,
             headers={"Content-Type": "application/json"},
             data=json.dumps({"content": "!status"})
         )
-
-    await ctx.send(response.text)
+        response_data = response.json()
+        message = response_data.get("message", "No message found.")
+        await ctx.send(message)
+    except Exception as e:
+        await ctx.send(f"❌ Error: {str(e)}")
 
 @bot.command()
 async def confirm(ctx):
