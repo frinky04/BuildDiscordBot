@@ -57,6 +57,17 @@ async def build(ctx, arg: str = None):
     except Exception as e:
         await ctx.send(f"❌ Error checking build status: {str(e)}")
 
+@bot.command()
+async def status(ctx):
+    try:
+        status = check_build_status()
+        if(status == "STOPPED"):
+            await ctx.send("Ready ✅")
+        elif(status == "RUNNING"):
+            await ctx.send("Running 📦")
+    except Exception as e:
+        await ctx.send(f"❌ Error: {str(e)}")
+
 async def start_build(ctx):
     await bot.wait_until_ready()
 
