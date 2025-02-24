@@ -42,7 +42,7 @@ async def status(ctx):
             data=json.dumps({"content": "!status"})
         )
 
-    await ctx.send(response.text.get("message"))
+    await ctx.send(response.text)
 
 @bot.command()
 async def confirm(ctx):
