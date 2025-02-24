@@ -103,7 +103,7 @@ async def nightly_build():
     global last_nightly_build_date
     now = datetime.now(ZoneInfo("America/New_York"))
     # If it is 3:00am EST and we haven't run the nightly build yet today
-    if now.hour == 3 and now.minute == 0:
+    if now.hour == 7 and now.minute == 0:
         if last_nightly_build_date != now.date():
             try:
                 # Check the current build status
