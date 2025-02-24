@@ -33,6 +33,16 @@ async def build(ctx):
     global build_confirmation
     build_confirmation = True
     await ctx.send('⚠️ Please use `!confirm` to confirm the build')
+    
+@bot.command()
+async def status(ctx):
+    response = requests.post(
+            BUILD_API_URL,
+            headers={"Content-Type": "application/json"},
+            data=json.dumps({"content": "!status"})
+        )
+
+    await ctx.send(response.text)
 
 @bot.command()
 async def confirm(ctx):
@@ -62,6 +72,7 @@ async def start_build(ctx):
             
     except Exception as e:
         await ctx.send(f"❌ Error: {str(e)}")
+
 
 
 
