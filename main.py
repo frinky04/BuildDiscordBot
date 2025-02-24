@@ -41,15 +41,14 @@ async def build(ctx):
         response_data = response.json()
         status = response_data.get("status", "STOPPED")
         if status == "STOPPED":
-            await build_start(ctx)
+            global build_confirmation
+            build_confirmation = True
+            await ctx.send('⚠️ Please use `!confirm` to confirm the build')
         else:
             await ctx.send(f"❌ Build is already in progress")
     except Exception as e:
         await ctx.send(f"❌ Error: {str(e)}")
-    
-    global build_confirmation
-    build_confirmation = True
-    await ctx.send('⚠️ Please use `!confirm` to confirm the build')
+
     
 @bot.command()
 async def status(ctx):
